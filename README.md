@@ -18,6 +18,7 @@
 ## Installing Tools
 - PDF : https://github.com/in28minutes/SpringIn28Minutes/blob/master/InstallationGuide-JavaEclipseAndMaven_v2.pdf
 - Video : https://www.youtube.com/watch?v=eqRF4xHoGck
+- https://www.youtube.com/watch?v=d2KwvXQgQx4&list=PLUjbZ3hCMnL-7j5Lof2q5S02KwMTeYRIE&index=221&t=32s
 
 ## Course Overview
 ### Step List
