@@ -13,10 +13,10 @@ mock()
 - Used to simulate external dependencies.
 
 Example:
-List<String> mockList = mock(ArrayList.class);
-mockList.add("A"); // Does nothing
-System.out.println(mockList.size()); // 0
-System.out.println(mockList.get(0)); // null
+-List<String> mockList = mock(ArrayList.class);
+-mockList.add("A"); // Does nothing
+-System.out.println(mockList.size()); // 0
+-System.out.println(mockList.get(0)); // null
 
 spy()
 - Wraps a real object.
@@ -24,10 +24,10 @@ spy()
 - Useful for partial mocking + behavior verification.
 
 Example:
-List<String> spyList = spy(new ArrayList<>());
-spyList.add("A");
-System.out.println(spyList.size()); // 1
-System.out.println(spyList.get(0)); // A
+-List<String> spyList = spy(new ArrayList<>());
+-spyList.add("A");
+-System.out.println(spyList.size()); // 1
+-System.out.println(spyList.get(0)); // A
 
 Summary:
 - Use mock() when you want to simulate behavior fully.
