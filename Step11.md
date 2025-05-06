@@ -6,6 +6,10 @@ First Snippet
 ```
 @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
+
+Both @RunWith(MockitoJUnitRunner.class) and MockitoJUnit.rule() are used to initialize Mockito annotations like @Mock, @InjectMocks, etc., but they are used in different ways and have different advantages.
+
+
 ```
 Second Snippet
 ```
