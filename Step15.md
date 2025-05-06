@@ -49,6 +49,51 @@ Summary:
 - Use @InjectMocks to inject those mocks into the class you want to test.
 ----------------------------------------------------------------------------------------------------------------
 
+Mockito vs PowerMockito for Static Methods
+==========================================
+
+1. @Mock / Mockito.mock()
+--------------------------
+- Used for mocking instance methods and objects.
+- Cannot mock static methods, final methods, or constructors.
+
+Example:
+@Mock
+MyService myService;
+when(myService.getData()).thenReturn("Mocked");
+
+❌ Cannot be used for:
+- staticMethod()
+- new MyService()
+- finalMethod()
+
+2. PowerMockito.mockStatic()
+-----------------------------
+- Allows mocking static methods, final classes, and constructors.
+- Requires PowerMockito dependency and runner.
+
+Example:
+PowerMockito.mockStatic(UtilityClass.class);
+when(UtilityClass.staticMethod(anyLong())).thenReturn(150);
+
+✅ Can mock static methods.
+
+3. Mockito v3.4.0+ with mockito-inline
+--------------------------------------
+- Native support for mocking static methods.
+- Requires 'mockito-inline' dependency.
+
+Example:
+try (MockedStatic<UtilityClass> mocked = mockStatic(UtilityClass.class)) {
+    mocked.when(() -> UtilityClass.staticMethod(anyLong())).thenReturn(150);
+}
+
+Summary
+-------
+- Use @Mock or Mockito.mock() for regular object mocking.
+- Use PowerMockito or Mockito-inline for static method mocking.
+------------------------------------------------------------------------------------------------------------
+
 ## Useful Snippets and References
 pom.xml
 ```
