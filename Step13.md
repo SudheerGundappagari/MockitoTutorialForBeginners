@@ -3,6 +3,37 @@
 - Creating a spy with Mockito?
 - Overriding specific methods in a spy?
 
+- Mockito: mock() vs spy()
+
+-------------------------------------------------------------------------------------------------------------
+mock()
+- Creates a dummy object with no real logic.
+- All methods return default values (null, 0, false, etc.).
+- Requires manual stubbing.
+- Used to simulate external dependencies.
+
+Example:
+List<String> mockList = mock(ArrayList.class);
+mockList.add("A"); // Does nothing
+System.out.println(mockList.size()); // 0
+System.out.println(mockList.get(0)); // null
+
+spy()
+- Wraps a real object.
+- Real methods are called unless stubbed.
+- Useful for partial mocking + behavior verification.
+
+Example:
+List<String> spyList = spy(new ArrayList<>());
+spyList.add("A");
+System.out.println(spyList.size()); // 1
+System.out.println(spyList.get(0)); // A
+
+Summary:
+- Use mock() when you want to simulate behavior fully.
+- Use spy() when you want real behavior with the ability to verify or override.
+-----------------------------------------------------------------------------------------------------------------
+
 ## Files List
 ### /pom.xml
 ```
