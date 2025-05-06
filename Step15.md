@@ -1,7 +1,53 @@
 ## What You Will Learn during this Step:
+- injectMocks
 - Add dependency on PowerMock.
 - Using PowerMock and Mockito to mock a Static Method.
 - PowerMockitoMockingStaticMethodTest
+
+---------------------------------------------------------------------------------------------------------------
+Mockito: @Mock vs @InjectMocks
+
+@Mock
+- Creates a mock instance of a class/interface.
+- No real logic is executed unless stubbed.
+- Used to simulate dependencies.
+
+Example:
+@Mock
+Service service;
+
+@Mock
+Repository repository;
+
+@InjectMocks
+Controller controller;
+
+@InjectMocks
+- Automatically injects mock objects into the class under test.
+- Resolves dependencies by matching types (constructor, setter, or field).
+- Helps test the actual logic of the class under test with controlled mocks.
+
+Example:
+public class Controller {
+    private final Service service;
+    public Controller(Service service) {
+        this.service = service;
+    }
+}
+
+Test Case:
+@Mock
+Service service;
+
+@InjectMocks
+Controller controller;
+
+controller.doSomething(); // uses the mocked Service
+
+Summary:
+- Use @Mock for mocking collaborators.
+- Use @InjectMocks to inject those mocks into the class you want to test.
+----------------------------------------------------------------------------------------------------------------
 
 ## Useful Snippets and References
 pom.xml
