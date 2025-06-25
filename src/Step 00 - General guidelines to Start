@@ -1,0 +1,168 @@
+Perfect — you're using JUnit + Mockito, which is the most common and solid combo for unit testing in Java.
+
+Here’s a step-by-step guide to writing unit tests for any class, with a reusable approach and examples.
+
+✅ GOAL: Write Tests for Any Class Using JUnit + Mockito
+🔁 Step-by-Step Plan:
+1. Understand the Class Under Test
+What does the class do?
+
+What are its public methods?
+
+What are its dependencies?
+
+💡 Only test the public behavior. Private methods will get tested indirectly.
+
+2. Identify Dependencies (Things to Mock)
+Does it call repositories, services, or HTTP clients?
+
+Does it access DB, file system, network?
+
+❗ These are candidates for @Mock.
+
+3. Create the Test Class Skeleton
+Use @ExtendWith(MockitoExtension.class) and @InjectMocks to inject mocks into the real class.
+
+java
+Copy
+Edit
+@ExtendWith(MockitoExtension.class)
+class GameServiceTest {
+
+    @Mock
+    private GameRepository gameRepository;
+
+    @InjectMocks
+    private GameService gameService;
+
+    // Your tests go here
+}
+4. Write Test Cases for Each Method
+Structure each test method like this:
+
+java
+Copy
+Edit
+@Test
+void shouldReturnGameDetailsWhenGameExists() {
+    // Given
+    Game game = new Game(1, "Poker");
+    when(gameRepository.findById(1)).thenReturn(Optional.of(game));
+
+    // When
+    Game result = gameService.getGameById(1);
+
+    // Then
+    assertEquals("Poker", result.getName());
+    verify(gameRepository).findById(1);  // interaction check
+}
+5. Handle Edge Cases & Exceptions
+Write tests for:
+
+Null inputs
+
+Invalid data
+
+Exceptions thrown by dependencies
+
+java
+Copy
+Edit
+@Test
+void shouldThrowWhenGameNotFound() {
+    when(gameRepository.findById(2)).thenReturn(Optional.empty());
+
+    assertThrows(GameNotFoundException.class, () -> gameService.getGameById(2));
+}
+6. Use ArgumentCaptor (Optional)
+If you want to verify what was passed into a mocked method:
+
+java
+Copy
+Edit
+@Captor
+ArgumentCaptor<Game> gameCaptor;
+
+@Test
+void shouldSaveGameCorrectly() {
+    Game game = new Game(1, "Blackjack");
+
+    gameService.saveGame(game);
+
+    verify(gameRepository).save(gameCaptor.capture());
+    assertEquals("Blackjack", gameCaptor.getValue().getName());
+}
+📦 Example: Realistic Class and Test Plan
+Class Under Test
+java
+Copy
+Edit
+public class GameService {
+    private final GameRepository gameRepository;
+
+    public GameService(GameRepository gameRepository) {
+        this.gameRepository = gameRepository;
+    }
+
+    public Game getGameById(int id) {
+        return gameRepository.findById(id)
+                .orElseThrow(() -> new GameNotFoundException("Game not found"));
+    }
+
+    public void saveGame(Game game) {
+        gameRepository.save(game);
+    }
+}
+Test Class
+java
+Copy
+Edit
+@ExtendWith(MockitoExtension.class)
+class GameServiceTest {
+
+    @Mock
+    GameRepository gameRepository;
+
+    @InjectMocks
+    GameService gameService;
+
+    @Captor
+    ArgumentCaptor<Game> gameCaptor;
+
+    @Test
+    void shouldReturnGameDetails() {
+        Game game = new Game(1, "Roulette");
+        when(gameRepository.findById(1)).thenReturn(Optional.of(game));
+
+        Game result = gameService.getGameById(1);
+
+        assertEquals("Roulette", result.getName());
+    }
+
+    @Test
+    void shouldThrowWhenGameNotFound() {
+        when(gameRepository.findById(2)).thenReturn(Optional.empty());
+
+        assertThrows(GameNotFoundException.class, () -> gameService.getGameById(2));
+    }
+
+    @Test
+    void shouldCaptureSavedGame() {
+        Game game = new Game(3, "Baccarat");
+
+        gameService.saveGame(game);
+
+        verify(gameRepository).save(gameCaptor.capture());
+        assertEquals("Baccarat", gameCaptor.getValue().getName());
+    }
+}
+🧠 Final Tips
+Step	Focus
+1	Test public methods only
+2	Use @Mock for dependencies
+3	Use @InjectMocks for class under test
+4	Use when().thenReturn() to mock behavior
+5	Use verify() to check interactions
+6	Cover happy, edge, and failure cases
+
+Would you like to go deeper into testing async methods, schedulers, or WebSocket logic (like in your game code)?
