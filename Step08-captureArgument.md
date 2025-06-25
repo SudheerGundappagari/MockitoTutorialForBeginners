@@ -4,6 +4,60 @@
 ## Useful Snippets and References
 First Snippet
 ```
+
+public class User {
+    private String id;
+    private String name;
+    // constructor, getters, setters omitted
+}
+
+public interface UserRepository {
+    void save(User user);
+}
+
+public class UserService {
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public void register(String id, String name) {
+        User user = new User(id, name);
+        userRepository.save(user);
+    }
+}
+
+
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+
+public class UserServiceTest {
+
+    @Test
+    void testRegisterUser_CapturesUserCorrectly() {
+        // Arrange
+        UserRepository userRepository = mock(UserRepository.class);
+        UserService userService = new UserService(userRepository);
+
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+
+        // Act
+        userService.register("123", "Alice");
+
+        // Assert
+        verify(userRepository).save(userCaptor.capture());
+
+        User capturedUser = userCaptor.getValue();
+        assertEquals("123", capturedUser.getId());
+        assertEquals("Alice", capturedUser.getName());
+    }
+}
+
 @Test
     public void captureArgument() {
         ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
