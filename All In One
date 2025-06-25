@@ -1,0 +1,656 @@
+
+
+
+
+Certainly! Below, I'll go into more detail about the JUnit 5 and Mockito annotations separately, providing thorough explanations for each. After that, I'll provide a program that covers all of them in one test case.
+
+JUnit 5 Annotations
+@Test
+
+
+Usage: Marks a method as a test method. This is the most basic annotation and is required for JUnit 5 to recognize that a method is a test.
+Example:
+ @Test
+void someTest() {
+    assertTrue(true);
+}
+
+
+@BeforeEach
+
+
+Usage: Used to specify that the annotated method should run before each test method. This is useful for common setup tasks.
+Example:
+ @BeforeEach
+void setup() {
+    // setup tasks before each test
+}
+
+
+@AfterEach
+
+
+Usage: Specifies that the annotated method should run after each test method. This is useful for cleanup operations after a test is completed.
+Example:
+ @AfterEach
+void cleanup() {
+    // cleanup tasks after each test
+}
+
+
+@BeforeAll
+
+
+Usage: Annotates a static method to be run once before all test methods in the current test class. Typically used for expensive setup tasks like initializing databases or configurations.
+Example:
+ @BeforeAll
+static void setupOnce() {
+    // setup tasks before any test
+}
+
+
+@AfterAll
+
+
+Usage: Annotates a static method to be run once after all test methods in the current test class have executed. It is useful for global cleanup tasks.
+Example:
+ @AfterAll
+static void cleanupOnce() {
+    // cleanup tasks after all tests
+}
+
+
+@DisplayName
+
+
+Usage: Provides a custom name for the test class or test method. This is useful for improving the readability of test reports.
+Example:
+ @Test
+@DisplayName("Test for adding numbers")
+void testAddition() {
+    assertEquals(2, 1 + 1);
+}
+
+
+@Tag
+
+
+Usage: Tags tests with a label, enabling filtering tests when running. Tags help categorize tests based on characteristics.
+Example:
+ @Test
+@Tag("smoke")
+void testSmoke() {
+    assertTrue(true);
+}
+
+
+@Timeout
+
+
+Usage: Specifies a time limit for the execution of a test. If the test exceeds the specified timeout, it is automatically failed.
+Example:
+ @Test
+@Timeout(500) // 500 milliseconds
+void testTimeout() {
+    // long-running logic
+}
+
+
+@EnabledIf
+
+
+Usage: Enables a test to be run conditionally based on an expression that evaluates to true.
+Example:
+ @Test
+@EnabledIf(expression = "System.getProperty('os.name').contains('Windows')")
+void testOnWindows() {
+    assertTrue(true);
+}
+
+
+@DisabledIf
+
+
+Usage: Disables a test conditionally based on an expression that evaluates to true.
+Example:
+ @Test
+@DisabledIf(expression = "System.getProperty('os.name').contains('Mac')")
+void testOnNonMac() {
+    assertTrue(true);
+}
+
+
+@Nested
+
+
+Usage: Allows grouping of related test methods inside a nested class. This is helpful for organizing tests that share a common setup or context.
+Example:
+ @Nested
+@DisplayName("Tests for arithmetic operations")
+class ArithmeticTests {
+    @Test
+    void testAddition() {
+        assertEquals(3, 1 + 2);
+    }
+}
+
+
+@ParameterizedTest
+
+
+Usage: Allows a test to run multiple times with different sets of parameters. This is useful when you want to run the same test with different inputs.
+Example:
+ @ParameterizedTest
+@ValueSource(ints = { 1, 2, 3 })
+void testWithParameters(int number) {
+    assertTrue(number > 0);
+}
+
+
+@ValueSource
+
+
+Usage: Provides a set of values (like strings, ints, etc.) for parameterized tests.
+Example:
+ @ParameterizedTest
+@ValueSource(strings = { "hello", "world" })
+void testWithStrings(String str) {
+    assertNotNull(str);
+}
+
+
+@MethodSource
+
+
+Usage: Uses a method to provide a stream or iterable of arguments to a parameterized test.
+Example:
+ @ParameterizedTest
+@MethodSource("provideNumbers")
+void testWithMethodSource(int number) {
+    assertTrue(number > 0);
+}
+
+static Stream<Integer> provideNumbers() {
+    return Stream.of(1, 2, 3);
+}
+
+
+@CsvSource
+
+
+Usage: Supplies CSV-formatted values for parameterized tests. This is helpful when you want to pass multiple arguments in a more compact format.
+Example:
+ @ParameterizedTest
+@CsvSource({ "1, 'one'", "2, 'two'" })
+void testWithCsvSource(int number, String name) {
+    assertNotNull(name);
+}
+
+
+
+Mockito Annotations
+@Mock
+
+
+Usage: Creates a mock object for the specified class or interface. Mockito will generate a mock instance of this type.
+Example:
+ @Mock
+MyService myService;
+
+
+@InjectMocks
+
+
+Usage: Injects mock objects into the class under test. Mockito automatically injects the mocks into the class, typically into the constructor or fields.
+Example:
+ @InjectMocks
+MyClass myClass;
+
+
+@Captor
+
+
+Usage: Used to capture arguments passed to mocked methods. This is useful when you want to verify the arguments that were passed to methods of mocks.
+Example:
+ @Captor
+ArgumentCaptor<String> captor;
+
+
+@Spy
+
+
+Usage: Creates a spy object, which wraps an actual object. Unlike @Mock, @Spy allows you to call real methods, but you can also verify interactions or stub behavior.
+Example:
+ @Spy
+MyService myService;
+
+
+@MockBean
+
+
+Usage: This is used in Spring-based tests to mock beans in the Spring application context. It’s specifically used in Spring Boot tests.
+Example:
+ @MockBean
+private MyRepository myRepository;
+
+
+
+Example Program Using All Annotations
+import org.junit.jupiter.api.*;
+import org.mockito.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import java.util.stream.*;
+
+public class AllAnnotationsExample {
+
+    @Mock
+    private MyService myService;
+
+    @InjectMocks
+    private MyClass myClass;
+
+    @Captor
+    private ArgumentCaptor<String> captor;
+
+    @BeforeAll
+    static void beforeAllTests() {
+        System.out.println("Before all tests");
+    }
+
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);  // Initialize mock objects
+        System.out.println("Before each test");
+    }
+
+    @AfterEach
+    void cleanup() {
+        System.out.println("After each test");
+    }
+
+    @AfterAll
+    static void afterAllTests() {
+        System.out.println("After all tests");
+    }
+
+    @Test
+    @DisplayName("Test addition method")
+    void testAdd() {
+        when(myService.add(2, 3)).thenReturn(5);
+        assertEquals(5, myService.add(2, 3));
+    }
+
+    @Test
+    @Tag("smoke")
+    @DisplayName("Test multiplication method")
+    void testMultiply() {
+        when(myService.multiply(2, 3)).thenReturn(6);
+        assertEquals(6, myService.multiply(2, 3));
+    }
+
+    @Test
+    @Timeout(500)
+    @DisplayName("Test timeout method")
+    void testTimeout() {
+        // simulate delay
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        assertTrue(true);
+    }
+
+    @Test
+    @EnabledIf(expression = "System.getProperty('os.name').contains('Windows')")
+    @DisplayName("Test conditional enabled on Windows")
+    void testEnabledIf() {
+        assertTrue(true);
+    }
+
+    @Test
+    @Nested
+    @DisplayName("Nested Tests")
+    class NestedTests {
+        @Test
+        @DisplayName("Nested test inside")
+        void nestedTest() {
+            assertEquals(2, 1 + 1);
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2, 3})
+    @DisplayName("Test with parameters")
+    void testWithParameters(int number) {
+        assertTrue(number > 0);
+    }
+
+    @Test
+    @Spy
+    MyService spyService = new MyService();
+
+    @Test
+    void testMockBehavior() {
+        myClass.performAction();
+        verify(myService, times(1)).actionPerformed();
+    }
+}
+
+class MyClass {
+    private MyService myService;
+
+    public void performAction() {
+        myService.actionPerformed();
+    }
+}
+
+class MyService {
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    public int multiply(int a, int b) {
+        return a * b;
+    }
+
+    public void actionPerformed() {
+        System.out.println("Action performed");
+    }
+}
+
+Summary
+This example covers JUnit 5 annotations like @Test, @BeforeEach, @AfterEach, @Timeout, @Tag, and many more, as well as Mockito annotations like @Mock, @InjectMocks, @Captor, @Spy, and @MockBean. This comprehensive program demonstrates their usage with clear explanations and provides a real-world scenario of testing and mocking.
+
+
+
+Here’s a complex Java program with:
+Controller, Service, and DAO layers
+Unit testing with JUnit 5 and Mockito, covering all key annotations
+
+📌 Features Covered
+✅ Spring Boot REST API
+ ✅ Controller, Service, DAO layers
+ ✅ Mockito & JUnit 5 with extensive annotations
+ ✅ Advanced Features:
+@Mock, @InjectMocks, @Spy
+@ParameterizedTest with @MethodSource, @ValueSource
+@Captor for argument capture
+@BeforeEach, @Test, @Nested
+
+1️⃣ Setup Dependencies (pom.xml)
+<dependencies>
+    <!-- Spring Boot -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!-- Spring Boot Test -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+
+    <!-- Mockito -->
+    <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <scope>test</scope>
+    </dependency>
+
+    <!-- JUnit 5 -->
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+
+
+2️⃣ Model Class (User.java)
+package com.example.model;
+
+public class User {
+    private Long id;
+    private String name;
+    private String email;
+
+    // Constructor
+    public User(Long id, String name, String email) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+    }
+
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+}
+
+
+3️⃣ DAO Layer (UserDAO.java)
+package com.example.dao;
+
+import com.example.model.User;
+import org.springframework.stereotype.Repository;
+import java.util.*;
+
+@Repository
+public class UserDAO {
+    private final Map<Long, User> userDatabase = new HashMap<>();
+
+    public User findById(Long id) {
+        return userDatabase.get(id);
+    }
+
+    public List<User> findAll() {
+        return new ArrayList<>(userDatabase.values());
+    }
+
+    public User save(User user) {
+        userDatabase.put(user.getId(), user);
+        return user;
+    }
+
+    public void delete(Long id) {
+        userDatabase.remove(id);
+    }
+}
+
+
+4️⃣ Service Layer (UserService.java)
+package com.example.service;
+
+import com.example.dao.UserDAO;
+import com.example.model.User;
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+@Service
+public class UserService {
+    private final UserDAO userDAO;
+
+    public UserService(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
+
+    public User getUserById(Long id) {
+        return userDAO.findById(id);
+    }
+
+    public List<User> getAllUsers() {
+        return userDAO.findAll();
+    }
+
+    public User createUser(User user) {
+        return userDAO.save(user);
+    }
+
+    public void deleteUser(Long id) {
+        userDAO.delete(id);
+    }
+}
+
+
+5️⃣ Controller Layer (UserController.java)
+package com.example.controller;
+
+import com.example.model.User;
+import com.example.service.UserService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/users")
+public class UserController {
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable Long id) {
+        return userService.getUserById(id);
+    }
+
+    @GetMapping
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
+    }
+
+    @PostMapping
+    public User createUser(@RequestBody User user) {
+        return userService.createUser(user);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+    }
+}
+
+
+6️⃣ Unit Testing (UserServiceTest.java)
+package com.example.service;
+
+import com.example.dao.UserDAO;
+import com.example.model.User;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class UserServiceTest {
+
+    @Mock
+    private UserDAO userDAO;
+
+    @InjectMocks
+    private UserService userService;
+
+    @Captor
+    private ArgumentCaptor<Long> idCaptor;
+
+    private User testUser;
+
+    @BeforeEach
+    void setUp() {
+        testUser = new User(1L, "John Doe", "john@example.com");
+    }
+
+    @Test
+    void testGetUserById() {
+        when(userDAO.findById(1L)).thenReturn(testUser);
+        User result = userService.getUserById(1L);
+
+        assertNotNull(result);
+        assertEquals("John Doe", result.getName());
+        verify(userDAO).findById(1L);
+    }
+
+    @Test
+    void testGetAllUsers() {
+        List<User> users = Arrays.asList(testUser, new User(2L, "Jane Doe", "jane@example.com"));
+        when(userDAO.findAll()).thenReturn(users);
+
+        List<User> result = userService.getAllUsers();
+        assertEquals(2, result.size());
+        verify(userDAO).findAll();
+    }
+
+    @Test
+    void testCreateUser() {
+        when(userDAO.save(any(User.class))).thenReturn(testUser);
+        User result = userService.createUser(testUser);
+
+        assertEquals(testUser.getName(), result.getName());
+        verify(userDAO).save(testUser);
+    }
+
+    @Test
+    void testDeleteUser() {
+        doNothing().when(userDAO).delete(anyLong());
+        userService.deleteUser(1L);
+
+        verify(userDAO).delete(idCaptor.capture());
+        assertEquals(1L, idCaptor.getValue());
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {1L, 2L, 3L})
+    void testGetUserByIdParameterized(Long userId) {
+        when(userDAO.findById(userId)).thenReturn(new User(userId, "Test User", "test@example.com"));
+
+        User result = userService.getUserById(userId);
+        assertNotNull(result);
+        assertEquals("Test User", result.getName());
+    }
+
+    @Nested
+    class EdgeCases {
+
+        @Test
+        void testFindById_NonExistentUser() {
+            when(userDAO.findById(999L)).thenReturn(null);
+            assertNull(userService.getUserById(999L));
+        }
+
+        @Test
+        void testDelete_NonExistentUser() {
+            doNothing().when(userDAO).delete(999L);
+            userService.deleteUser(999L);
+            verify(userDAO).delete(999L);
+        }
+    }
+}
+
+
+📌 Key Takeaways
+Full MVC structure (Controller, Service, DAO)
+Mocking dependencies with @Mock and @InjectMocks
+Capturing arguments using @Captor
+Parameterized testing (@ParameterizedTest, @ValueSource)
+Nested test classes (@Nested) for edge cases
+Mockito’s when, doNothing, verify for behavior testing
+
+Would you like any modifications or enhancements? 🚀
+
